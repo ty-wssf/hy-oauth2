@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: oauth2-server
+  # 基于内存的用户
+  security:
+    user:
+      # 账号
+      name: root
+      # 密码
+      password: 123456
+
+server:
+  port: 8080
