@@ -6,6 +6,9 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
+/**
+ * 认证服务配置
+ */
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
@@ -23,7 +26,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authorizedGrantTypes("authorization_code")
                 // 授权范围
                 .scopes("app")
+                // 自动同意授权
+                .autoApprove("true")
                 // 注册回调地址
-                .redirectUris("http://www.funtl.com");
+                .redirectUris("http://10.20.31.252:8800/#/trafficOrder/home/index");
     }
 }
