@@ -1,4 +1,4 @@
-package com.hy.oauth2.config;
+package com.hy.oauth2.server.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
