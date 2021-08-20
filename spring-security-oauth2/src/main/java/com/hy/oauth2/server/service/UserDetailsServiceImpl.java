@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             });
         }
 
+        // grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_test2"));//用于测试角色控制权限
         // 由框架完成认证工作
         return new User(tbUser.getUsername(), tbUser.getPassword(), grantedAuthorities);
     }
