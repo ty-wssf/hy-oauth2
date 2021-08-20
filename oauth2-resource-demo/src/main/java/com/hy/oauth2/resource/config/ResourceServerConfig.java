@@ -24,12 +24,29 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
-                    // 以下为配置所需保护的资源路径及权限，需要与认证服务器配置的授权部分对应
+        // 以下为配置所需保护的资源路径及权限，需要与认证服务器配置的授权部分对应
                 /*.antMatchers("/").hasAuthority("SystemContent")
                 .antMatchers("/view/**").hasAuthority("SystemContentView")
                 .antMatchers("/insert/**").hasAuthority("SystemContentInsert")
                 .antMatchers("/update/**").hasAuthority("SystemContentUpdate")
                 .antMatchers("/delete/**").hasAuthority("SystemContentDelete")*/;
     }
+
+    /*@ConditionalOnProperty(prefix = "security.oauth2.token.store", name = "type", havingValue = "jwt", matchIfMissing = false)
+    @Bean
+    public TokenStore tokenStore() {
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    *//**
+     * 与授权服务器使用共同的密钥进行解析
+     *//*
+    @ConditionalOnProperty(prefix = "security.oauth2.token.store", name = "type", havingValue = "jwt", matchIfMissing = false)
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("hy-oauth2");
+        return converter;
+    }*/
 
 }
