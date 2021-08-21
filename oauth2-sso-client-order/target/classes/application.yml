@@ -18,8 +18,8 @@ security:
       access-token-uri: http://localhost:8086/oauth/token
       user-authorization-uri: http://localhost:8086/oauth/authorize
     resource:
-      jwt:
-        key-uri: http://localhost:8086/oauth/token_key
+      wt:
+       key-uri: http://localhost:8086/oauth/token_key
       token-info-uri: http://localhost:8086/oauth/check_token
 spring:
   application:
