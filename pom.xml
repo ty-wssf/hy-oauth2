@@ -15,6 +15,7 @@
         <module>oauth2-resource-demo</module>
         <module>oauth2-sso-client-order</module>
         <module>oauth2-sso-client-member</module>
+        <module>security-demo</module>
     </modules>
 
     <properties>
