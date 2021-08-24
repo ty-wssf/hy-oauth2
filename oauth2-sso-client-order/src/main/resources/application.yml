@@ -4,26 +4,27 @@ server:
   servlet:
     session:
       cookie:
-        name: OAUTH2-CLIENT-SESSION-ORDER
-        path: /
-security:
-  oauth2:
-    token:
-      store:
-        # 配置token存储方式 支持 inMemory、jdbc、redis、jwt，默认inMemory
-        type: jwt
-    client:
-      client-id: order
-      client-secret: secret
-      access-token-uri: http://localhost:8086/oauth/token
-      user-authorization-uri: http://localhost:8086/oauth/authorize
-    resource:
-      jwt:
-        key-uri: http://localhost:8086/oauth/token_key
-      token-info-uri: http://localhost:8086/oauth/check_token
+        name: ${spring.application.name}-session
 spring:
   application:
     name: sso-client-order
   main:
     allow-bean-definition-overriding: true
+security:
+  oauth2:
+    url: http://localhost:8086
+    token:
+      store:
+        # 配置token存储方式 支持 inMemory、jdbc、redis、jwt，默认inMemory
+        type: jwt
+    client:
+      client-id: ${spring.application.name}
+      client-secret: secret
+      access-token-uri: ${security.oauth2.url}/oauth/token
+      user-authorization-uri: ${security.oauth2.url}/oauth/authorize
+    resource:
+      jwt:
+        key-uri: ${security.oauth2.url}/oauth/token_key
+      token-info-uri: ${security.oauth2.url}/oauth/check_token
+
 

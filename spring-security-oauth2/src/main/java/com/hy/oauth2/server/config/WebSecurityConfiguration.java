@@ -2,6 +2,7 @@ package com.hy.oauth2.server.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hy.oauth2.server.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,9 @@ import java.io.PrintWriter;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Value("${security.oauth2.token.auth-mode}")
+    private String authMode;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -90,76 +94,80 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*super.configure(http);
-        http
-                .logout()
-                .permitAll()
-                .addLogoutHandler(new CustomLogoutHandler())
-                .logoutSuccessHandler(new CustomLogoutSuccessHandler());*/
-
-        // 存在bug，无法退出
-        http
-                // 不配置/login post 403
-                .csrf()
-                .disable()
-                // 跨域
-                .cors()
-                .and()
-                .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest)
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
-                .successHandler((req, resp, authentication) -> {
-                    Object principal = authentication.getPrincipal();
-                    resp.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = resp.getWriter();
-                    out.write(new ObjectMapper().writeValueAsString(principal));
-                    out.flush();
-                    out.close();
-                })
-                .failureHandler((req, resp, e) -> {
-                    resp.setContentType("application/json;charset=utf-8");
-                    PrintWriter out = resp.getWriter();
-                    out.write(e.getMessage());
-                    out.flush();
-                    out.close();
-                })
-                .permitAll(true)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint((req, resp, authException) -> {
-                            resp.setContentType("application/json;charset=utf-8");
-                            PrintWriter out = resp.getWriter();
-                            out.write("尚未登录，请先登录");
-                            out.flush();
-                            out.close();
+        // 是否前后端分离模式
+        if ("1".equals(authMode)) {
+            // 存在bug，无法退出
+            http
+                    // 不配置/login post 403
+                    .csrf()
+                    .disable()
+                    // 跨域
+                    .cors()
+                    .and()
+                    .authorizeRequests()
+                    .requestMatchers(CorsUtils::isPreFlightRequest)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                    .formLogin()
+                    .successHandler((req, resp, authentication) -> {
+                        Object principal = authentication.getPrincipal();
+                        resp.setContentType("application/json;charset=utf-8");
+                        PrintWriter out = resp.getWriter();
+                        out.write(new ObjectMapper().writeValueAsString(principal));
+                        out.flush();
+                        out.close();
+                    })
+                    .failureHandler((req, resp, e) -> {
+                        resp.setContentType("application/json;charset=utf-8");
+                        PrintWriter out = resp.getWriter();
+                        out.write(e.getMessage());
+                        out.flush();
+                        out.close();
+                    })
+                    .permitAll(true)
+                    .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint((req, resp, authException) -> {
+                                resp.setContentType("application/json;charset=utf-8");
+                                PrintWriter out = resp.getWriter();
+                                out.write("尚未登录，请先登录");
+                                out.flush();
+                                out.close();
+                            }
+                    )
+                    .and()
+                    .httpBasic()
+                    .and()
+                    .logout()
+                    .permitAll()
+                    .logoutSuccessHandler((req, resp, authentication) -> {
+                        // 将子系统的cookie删掉  实现退出一个系统其他子系统跟着退出
+                        Cookie[] cookies = req.getCookies();
+                        if (cookies != null && cookies.length > 0) {
+                            for (Cookie cookie : cookies) {
+                                cookie.setMaxAge(0);
+                                cookie.setPath("/");
+                                resp.addCookie(cookie);
+                            }
                         }
-                )
-                .and()
-                .httpBasic()
-                .and()
-                .logout()
-                .permitAll()
-                .logoutSuccessHandler((req, resp, authentication) -> {
-                    // 将子系统的cookie删掉  实现退出一个系统其他子系统跟着退出
-                    Cookie[] cookies = req.getCookies();
-                    if (cookies != null && cookies.length > 0) {
-                        for (Cookie cookie : cookies) {
-                            cookie.setMaxAge(0);
-                            cookie.setPath("/");
-                            resp.addCookie(cookie);
-                        }
-                    }
                     /*req.getSession().invalidate();
                     resp.setContentType("application/json;charset=utf-8");
                     PrintWriter out = resp.getWriter();
                     out.write("注销成功");
                     out.flush();
                     out.close();*/
-                });
+                    });
+        } else {
+            super.configure(http);
+            http
+                    .logout()
+                    .permitAll()
+                    .addLogoutHandler(new CustomLogoutHandler())
+                    .logoutSuccessHandler(new CustomLogoutSuccessHandler());
+        }
+
     }
 
 
