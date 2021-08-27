@@ -1,13 +1,10 @@
 package com.hy.security.demo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.cors.CorsUtils;
-
-import java.io.PrintWriter;
 
 /**
  * @author wyl
@@ -19,7 +16,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http
+        http
                 // 不配置/login post 403
                 .csrf()
                 .disable()
@@ -29,17 +26,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest)
                 .permitAll()
+                /*.antMatchers("/hello").permitAll()*/
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("http://localhost:9081/login.html")
-                .loginProcessingUrl("/login")
-                .permitAll(true)
-                .and()
-                .httpBasic();*/
-
-        http
+                /*.loginPage("http://localhost:9081/login.html")
+                 .loginProcessingUrl("/login")*/
+                .permitAll(true);
+        /*http
                 // 不配置/login post 403
                 .csrf()
                 .disable()
@@ -93,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     out.flush();
                     out.close();
                 })
-                .permitAll();
+                .permitAll();*/
     }
 
 }
